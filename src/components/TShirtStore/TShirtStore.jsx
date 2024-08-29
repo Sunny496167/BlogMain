@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
 const ProductCard = ({ product }) => {
   const [selectedImage, setSelectedImage] = useState(product.images[0]);
   const [selectedSize, setSelectedSize] = useState("Regular");
@@ -65,6 +66,7 @@ const ProductCard = ({ product }) => {
     </div>
   );
 };
+
 const TShirtStore = () => {
   const products = [
     {
@@ -113,13 +115,13 @@ const TShirtStore = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handlePrevious = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + products.length) % products.length);
-  };
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
+    }, 6000);
 
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
-  };
+    return () => clearInterval(intervalId); // Clean up on unmount
+  }, [products.length]);
 
   return (
     <div className="container mx-auto p-4">
@@ -134,17 +136,15 @@ const TShirtStore = () => {
             </div>
           ))}
         </div>
-
-        {/* Navigation Buttons */}
         <button
           className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
-          onClick={handlePrevious}
+          onClick={() => setCurrentIndex((prevIndex) => (prevIndex - 1 + products.length) % products.length)}
         >
           &#10094;
         </button>
         <button
           className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
-          onClick={handleNext}
+          onClick={() => setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length)}
         >
           &#10095;
         </button>
@@ -154,4 +154,3 @@ const TShirtStore = () => {
 };
 
 export default TShirtStore;
-
